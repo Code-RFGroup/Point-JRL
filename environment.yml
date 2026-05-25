@@ -1,0 +1,41 @@
+name: point-jr
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+
+  - pytorch=2.5.1
+  - torchvision
+  - torchaudio
+  - pytorch-cuda=12.1
+
+  - numpy>=1.26
+  - scikit-learn
+  - matplotlib
+  - pandas
+  - scipy
+  - faiss-cpu
+
+  - tqdm
+  - pyyaml
+  - natsort
+  - opencv
+  - networkx
+  - pillow
+  - sympy
+
+  - pip:
+    - torch-geometric
+    - pyg_lib
+    - torch_scatter
+    - torch_sparse
+    - torch_cluster
+    - torch_spline_conv
+    - klayout
+    - hilbertcurve
+    - termcolor
+    - yacs

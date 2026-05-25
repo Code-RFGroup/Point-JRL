@@ -1,0 +1,39 @@
+# Training outputs
+outputs/
+results/
+pretrained/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archives and docs
+*.zip
+*.pdf
+*.pptx
+*.ppt
+
+
+# Temporary files
+tmp/
+*.tmp
+*.bak

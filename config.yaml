@@ -1,0 +1,206 @@
+description: "Point-JR: Pattern Clustering for Hotspot Detection"
+model: "hybrid_point"
+gpu_ids: [0]
+seed: 42
+
+models:
+  # --- SimSiam (Image-based self-supervised) ---
+  simsiam:
+    data:
+      type: "image"
+      root: "./data/ICCAD2012/resized_all_256"
+      split_root: "./data/ICCAD2012/splits/default"
+      image_size: 256
+      batch_size: 256
+      num_workers: 8
+
+    arch:
+      name: "resnet18"
+      dim: 2048
+      pred_dim: 512
+
+    train:
+      epochs: 100
+      warm_up: 10
+      init_lr: 0.05
+      min_lr: 0.000001
+      optimizer: "sgd"
+      momentum: 0.9
+      weight_decay: 0.001
+      fix_pred_lr: True
+      save_dir: "./outputs/simsiam"
+
+    inference:
+      batch_size: 256
+      num_workers: 8
+      checkpoint: "./outputs/simsiam/best.pth"
+      save_dir: "./results/simsiam"
+
+  # --- LPA (Triplet-based contrastive) ---
+  lpa:
+    data:
+      type: "image"
+      root: "./data/ICCAD2012/resized_all_1200"
+      split_root: "./data/ICCAD2012/splits/default"
+      image_size: 1200
+      batch_size: 48
+      num_workers: 8
+
+    arch:
+      name: 'None'
+
+    train:
+      epochs: 16
+      warm_up: 0
+      init_lr: 0.075
+      min_lr: 0.0001
+      optimizer: "sgd"
+      momentum: 0.9
+      weight_decay: 0.0005
+      fix_pred_lr: False
+      save_dir: "./outputs/lpa"
+
+    inference:
+      batch_size: 16
+      num_workers: 8
+      checkpoint: "./outputs/lpa/best.pth"
+      save_dir: "./results/lpa"
+
+  # --- PointNeXt (Point cloud self-supervised) ---
+  pointnext:
+    data:
+      type: "point_cloud"
+      root: "./data/ICCAD2012/points_4d"
+      split_root: "./data/ICCAD2012/splits/default"
+      npoints: 1024
+      batch_size: 256
+      num_workers: 8
+
+    arch:
+      name: "pointnext_pyg"
+      in_channels: 4
+      width: 32
+      k: 20
+      latent_dim: 256
+      dim: 128
+      pred_dim: 64
+
+    train:
+      epochs: 200
+      warm_up: 10
+      init_lr: 0.001
+      min_lr: 0.000001
+      optimizer: "adamw"
+      weight_decay: 0.05
+      fix_pred_lr: True
+      save_dir: "./outputs/pointnext"
+      resume: ""
+
+    inference:
+      batch_size: 64
+      num_workers: 8
+      checkpoint: "./outputs/pointnext/best.pth"
+      save_dir: "./results/pointnext"
+
+  # --- Hybrid PointNeXt (SimSiam + Classification) ---
+  hybrid_point:
+    data:
+      type: "point_cloud"
+      root: "./data/ICCAD2012/points_4d"
+      split_root: "./data/ICCAD2012/splits/default"
+      npoints: 1024
+      batch_size: 256
+      num_workers: 8
+
+    arch:
+      name: "pointnext_pyg"
+      in_channels: 4
+      width: 32
+      k: 20
+      latent_dim: 256
+      dim: 128
+      pred_dim: 64
+      num_classes: 2
+
+    train:
+      epochs: 200
+      warm_up: 10
+      ssl_epoch: 50
+      init_lr: 0.001
+      min_lr: 0.000001
+      optimizer: "adamw"
+      weight_decay: 0.05
+      fix_pred_lr: True
+      save_dir: "./outputs/hybrid_point"
+      resume: ""
+      lambda_cls: 1
+
+    inference:
+      batch_size: 64
+      num_workers: 8
+      checkpoint: "./outputs/hybrid_point/best.pth"
+      save_dir: "./results/hybrid_point"
+
+  # --- Hybrid Image (SimSiam + Classification) ---
+  hybrid_image:
+    data:
+      type: "point_cloud"
+      root: "./data/ICCAD2012/resized_all_256"
+      split_root: "./data/ICCAD2012/splits/default"
+      image_size: 256
+      batch_size: 256
+      num_workers: 8
+
+    arch:
+      name: "resnet18"
+      dim: 2048
+      pred_dim: 512
+      num_classes: 2
+
+    train:
+      epochs: 100
+      warm_up: 10
+      ssl_epoch: 0
+      init_lr: 0.001
+      min_lr: 0.000001
+      optimizer: "adamw"
+      momentum: '0.9'
+      weight_decay: 0.05
+      fix_pred_lr: True
+      save_dir: "./outputs/hybrid_image"
+      resume: ""
+      lambda_cls: 1
+
+    inference:
+      batch_size: 64
+      num_workers: 8
+      checkpoint: "./outputs/hybrid_image/best.pth"
+      save_dir: "./results/hybrid_image"
+
+  # --- GNN (Graph Neural Network) ---
+  gnn:
+    data:
+      type: "graph"
+      root: "./data/ICCAD2012/graphs"
+      split_root: "./data/ICCAD2012/splits/default"
+      batch_size: 128
+      num_workers: 8
+
+    arch:
+      name: 'None'
+
+    train:
+      epochs: 20
+      warm_up: 0
+      init_lr: 0.001
+      min_lr: 0.000001
+      optimizer: "adam"
+      weight_decay: 0.0
+      fix_pred_lr: False
+      save_dir: "./outputs/gnn"
+
+    inference:
+      batch_size: 64
+      num_workers: 8
+      checkpoint: "./outputs/gnn/best.pth"
+      save_dir: "./results/gnn"
