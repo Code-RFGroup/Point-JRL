@@ -187,10 +187,10 @@ python -m utils.cluster ./results/hybrid_point
 If you find this work useful, please cite:
 
 ```bibtex
-@article{point-jr-2025,
-  title   = {Point-JR: Pattern Clustering for Hotspot Detection},
-  author  = {},
-  year    = {2025}
+@article{point-jr-2026,
+  title   = {Discriminative Joint Representation Learning via High-Fidelity Point Clouds for Pattern Clustering},
+  author  = {Longyue Wei, Changzhe Jiao, Rongfang Wang},
+  year    = {2026}
 }
 ```
 
@@ -200,4 +200,4 @@ This project is released under the [MIT License](LICENSE).
 
 ## Acknowledgments
 
-The benchmark data used in this project is from the **ICCAD 2012 CAD Contest** on pattern classification.
+The benchmark data used in this project is from the **ICCAD 2012 CAD Contest**.
